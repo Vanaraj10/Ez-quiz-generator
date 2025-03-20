@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Quiz Time!</title>
+    <link rel="stylesheet" href="styles2.css">
+</head>
+<body>
+    <center><h1>Quiz Time!</h1></center>
+    <div id="quiz"></div>
+    <center><button id="submit">Submit Quiz</button></center>
+    <div id="results"></div>
+
+    <script>
+        let questions = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const category = localStorage.getItem("category");
+            const difficulty = localStorage.getItem("difficulty");
+            const numQuestions = localStorage.getItem("numQuestions");
+
+            if (!category || !difficulty || !numQuestions) {
+                alert("Quiz parameters are missing. Please start the quiz from the beginning.");
+                window.location.href = "index.html";
+                return;
+            }
+
+            function decodeHTMLEntities(text) {
+                const textarea = document.createElement('textarea');
+                textarea.innerHTML = text;
+                return textarea.value;
+            }
+
+            async function fetchQuiz() {
+                const quizContainer = document.getElementById("quiz");
+                quizContainer.innerHTML = "<p>Loading quiz...</p>";
+
+                const url = `https://opentdb.com/api.php?amount=${numQuestions}&category=${category}&difficulty=${difficulty}&type=multiple`;
+
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+
+                    if (data.response_code !== 0) {
+                        let errorMessage = 'An unknown error occurred.';
+                        switch (data.response_code) {
+                            case 1:
+                                errorMessage = 'No results found. Please try a different query.';
+                                break;
+                            case 2:
+                                errorMessage = 'Invalid parameters. Please check your inputs.';
+                                break;
+                            case 3:
+                                errorMessage = 'Session token does not exist.';
+                                break;
+                            case 4:
+                                errorMessage = 'Session token has returned all possible questions for the specified query. Resetting the token is necessary.';
+                                break;
+                        }
+                        quizContainer.innerHTML = `<p style="color: red;">Error: ${errorMessage}</p>`;
+                        return;
+                    }
+
+                    questions = data.results;
+                    displayQuiz(questions);
+                } catch (error) {
+                    quizContainer.innerHTML = `<p style="color: red;">An error occurred while fetching the quiz. Please try again later.</p>`;
+                    console.error("Fetch error:", error);
+                }
+            }
+
+            function displayQuiz(questions) {
+                const quizContainer = document.getElementById("quiz");
+                quizContainer.innerHTML = "";
+
+                questions.forEach((q, index) => {
+                    const questionDiv = document.createElement("div");
+                    questionDiv.classList.add("question");
+                    questionDiv.innerHTML = `<h3>Q${index + 1}: ${decodeHTMLEntities(q.question)}</h3>`;
+
+                    let options = [...q.incorrect_answers, q.correct_answer];
+                    options = options.map(option => decodeHTMLEntities(option));
+                    options.sort(() => Math.random() - 0.5);
+
+                    options.forEach(option => {
+                        questionDiv.innerHTML += `
+                            <label>
+                                <input type="radio" name="q${index}" value="${option}" aria-label="${option}">
+                                ${option}
+                            </label><br>
+                        `;
+                    });
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function submitQuiz() {
+    const quizContainer = document.getElementById("quiz");
+    const answerContainers = quizContainer.getElementsByClassName("question");
+    let score = 0;
+    let resultsHTML = "";
+
+    for (let i = 0; i < answerContainers.length; i++) {
+        const questionDiv = answerContainers[i];
+        const selectedOption = questionDiv.querySelector('input[type="radio"]:checked');
+        const correctAnswer = decodeHTMLEntities(questions[i].correct_answer);
+
+        if (selectedOption) {
+            const userAnswer = selectedOption.value;
+
+            if (userAnswer === correctAnswer) {
+                score++;
+                questionDiv.style.color = 'green';
+                resultsHTML += `<p>Q${i + 1}: ✅ Correct</p>`;
+            } else {
+                questionDiv.style.color = 'red';
+                resultsHTML += `<p>Q${i + 1}: ❌ Incorrect <br> Your answer: <b>${userAnswer}</b> <br> Correct answer: <b>${correctAnswer}</b></p>`;
+            }
+        } else {
+            questionDiv.style.color = 'orange';
+            resultsHTML += `<p>Q${i + 1}: ⚠️ Not Attempted <br> Correct answer: <b>${correctAnswer}</b></p>`;
+        }
+    }
+
+    const resultsContainer = document.getElementById("results");
+    resultsContainer.innerHTML = `<h2>You scored ${score} out of ${answerContainers.length}.</h2><br>${resultsHTML}`;
+}
+
+
+            document.getElementById('submit').addEventListener('click', submitQuiz);
+
+            fetchQuiz();
+        });
+    </script>
+</body>
+</html>

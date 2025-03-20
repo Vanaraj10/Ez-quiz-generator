@@ -1,0 +1,35 @@
+body{
+    background-image: url("WhatsApp Image 2025-03-20 at 12.01.21 PM.jpeg");
+}
+h3{
+    color: white;
+    font-size: 20px;
+    margin: 10px;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+div{
+    max-width: 600px;
+}
+#input-container{
+    background: linear-gradient(to right,#9336B4,#00ADB5);
+    opacity: 80%;
+    border-radius: 20px;
+    padding: 10px;
+    color: white;
+    height: 170px;
+}
+select{
+    border-radius: 20px;
+    height: 40px;
+    width: 130px;
+}
+button{
+    border-radius: 30px;
+    padding: 10px;
+    font-size: 30px;
+    margin-top: 30px;
+    color: white;
+    background: linear-gradient(to right,#9336B4,#00ADB5);
+    border: 0;
+}

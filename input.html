@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>EZ Quiz Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee+Outline&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles1.css">
+</head>
+<body>
+    <center>
+        <div style="color: white; background-color: #9336B4; border-radius: 40px; padding: 13px; opacity: 70%; font-size: 30px; margin: 10px; display: block; background: linear-gradient(to right, #9336B4, #00ADB5);">
+            EZ QUIZ GENERATOR
+        </div>
+        <h3>Enter the topics and choose your difficulty level, we will generate a quiz for you</h3>
+        <div id="input-container">
+            <label for="category">Select the topic:</label>
+            <select id="category" name="category" style="margin-left: 34px;">
+                <option value="9">General Knowledge</option>
+                <option value="18">Computers</option>
+                <option value="19">Mathematics</option>
+                <option value="23">History</option>
+            </select>
+            <br><br>
+            <label for="difficulty">Choose the difficulty:</label>
+            <select id="difficulty" name="difficulty">
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+            <br><br>
+            <label for="numQuestions">Number of questions:</label>
+            <input type="number" id="numQuestions" name="numQuestions" value="5" max="10" min="3" style="margin-left: 20px; width: 50px; border-radius: 40px; height: 30px;">
+            <br><br>
+            <center><button onclick="startQuiz()">Generate Quiz</button></center>
+        </div>
+    </center>
+    <script>
+        function startQuiz() {
+            const category = document.getElementById("category").value;
+            const difficulty = document.getElementById("difficulty").value;
+            const numQuestions = document.getElementById("numQuestions").value;
+            
+            if (numQuestions < 3 || numQuestions > 10) {
+                alert("Please enter a number of questions between 3 and 10.");
+                return;
+            }
+
+            localStorage.setItem("category", category);
+            localStorage.setItem("difficulty", difficulty);
+            localStorage.setItem("numQuestions", numQuestions);
+
+            window.location.href = "destination.html";
+        }
+    </script>
+</body>
+</html>
