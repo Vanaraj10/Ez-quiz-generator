@@ -10,7 +10,6 @@ loginBtn.addEventListener('click',()=>{
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Registration Form Submission
     document.querySelector(".register form").addEventListener("submit", function (event) {
         event.preventDefault();
 
@@ -19,13 +18,12 @@ document.addEventListener("DOMContentLoaded", function () {
         let password = document.querySelector(".register input[placeholder='Password']").value;
 
         if (username && email && password) {
-            // Store user data in localStorage
             localStorage.setItem("username", username);
             localStorage.setItem("email", email);
-            localStorage.setItem("password", password); // ⚠️ Not secure, just for learning!
+            localStorage.setItem("password", password);
 
             alert("Registration successful! You can now log in.");
-            window.location.reload(); // Reload to switch to the login form
+            window.location.reload(); 
         } else {
             alert("Please fill all fields.");
         }
@@ -42,13 +40,12 @@ document.addEventListener("DOMContentLoaded", function () {
         let storedPassword = localStorage.getItem("password");
 
         if (enteredUsername === storedUsername && enteredPassword === storedPassword) {            
-            window.location.href = "input.html"; // Redirect to the dashboard
+            window.location.href = "input.html";
         } else {
             alert("Incorrect username or password!");
         }
     });
 
-    // Toggle between Login and Register forms
     document.querySelector(".register-btn").addEventListener("click", function () {
         document.querySelector(".container").classList.add("active");
     });
